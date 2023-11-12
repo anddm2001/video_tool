@@ -1,0 +1,26 @@
+# EditorConfig: https://editorconfig.org
+
+# Установка корневого файла EditorConfig
+root = true
+
+# Секция для всех файлов
+[*]
+# Используйте пробелы для отступов (Go предпочитает табы)
+indent_style = tab
+# Размер отступа (1 таб = 4 пробела)
+indent_size = 4
+# Конец строки в Unix-стиле
+end_of_line = lf
+# Используйте UTF-8 в качестве кодировки символов
+charset = utf-8
+# Обрезайте пробелы в конце строк
+trim_trailing_whitespace = true
+# Добавьте пустую строку в конец файла
+insert_final_newline = true
+
+# Секция для файлов Go
+[*.go]
+# Установка стандартного форматирования кода для Go
+indent_style = tab
+# Запрет на преобразование табов в пробелы
+indent_size = tab

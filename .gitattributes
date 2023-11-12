@@ -1,0 +1,4 @@
+*.[mM][aA][kK][eE] text eol=lf
+*.sh text eol=lf
+*.mk text eol=lf
+.env.example text eol=lf
