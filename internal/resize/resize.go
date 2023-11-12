@@ -18,7 +18,7 @@ func resize(in, out, resolution, ffmpeg_path string) {
 	err := cmd.Run()
 	if err != nil {
 		log.Panicln(err.Error())
-		log.Printf("Error converting file %s using codec %s: %v", in, resolution, err)
+		log.Printf("Error converting file %s using video resolution %s: %v", in, resolution, err)
 	}
 }
 

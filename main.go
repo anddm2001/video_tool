@@ -6,6 +6,8 @@ import (
 
 	"github.com/spf13/cobra"
 	"videotool/cmd/convert"
+	"videotool/cmd/resize"
+	"videotool/cmd/chspeed"
 	converter "videotool/internal/convert"
 )
 
@@ -14,6 +16,8 @@ var codec string // переменная для хранения выбранн�
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&codec, "codec", "c", "h264", "Codec to use for conversion (h264, h265, vp9, av1)")
 	rootCmd.AddCommand(convert.ConvertCmd)
+	rootCmd.AddCommand(resize.ConvertCmd)
+	rootCmd.AddCommand(chspeed.ConvertCmd)
 }
 
 var rootCmd = &cobra.Command{
