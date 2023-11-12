@@ -2,6 +2,8 @@ package convert
 
 import (
 	"videotool/pkg/config"
+	"videotool/pkg/detect"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -9,15 +11,37 @@ import (
 
 func convert(in, out, codec, ffmpeg_path string) {
 
-	cmd := exec.Command(ffmpeg_path, "-hide_banner", "-y", "-i", in, "-vcodec", codec, "-crf", "30", out)
+	os_name := detect.DetectOS()
 
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
+	if len(os_name) == 0 {
+		os_name = "linux"
+	}
 
-	err := cmd.Run()
-	if err != nil {
-		log.Panicln(err.Error())
-		log.Printf("Error converting file %s using codec %s: %v", in, codec, err)
+	if os_name == "windows" {
+		command := fmt.Sprintf("%s -hide_banner -y -i %s -vcodec %s -crf 30 %s", ffmpeg_path, in, codec, out)
+		cmd := exec.Command("cmd", "/C", command)
+
+		cmd.Stderr = os.Stderr
+		cmd.Stdout = os.Stdout
+
+		err := cmd.Run()
+
+		if err != nil {
+			log.Panicln(err.Error())
+			log.Printf("Error converting file %s using codec %s: %v", in, codec, err)
+		}
+	} else {
+		cmd := exec.Command(ffmpeg_path, "-hide_banner", "-y", "-i", in, "-vcodec", codec, "-crf", "30", out)
+
+		cmd.Stderr = os.Stderr
+		cmd.Stdout = os.Stdout
+
+		err := cmd.Run()
+
+		if err != nil {
+			log.Panicln(err.Error())
+			log.Printf("Error converting file %s using codec %s: %v", in, codec, err)
+		}
 	}
 }
 

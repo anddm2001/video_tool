@@ -2,6 +2,8 @@ package resize
 
 import (
 	"videotool/pkg/config"
+	"videotool/pkg/detect"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -10,15 +12,35 @@ import (
 
 func resize(in, out, resolution, ffmpeg_path string) {
 
-	cmd := exec.Command(ffmpeg_path, "-hide_banner", "-y", "-i", in, "-s", resolution, out)
+	os_name := detect.DetectOS()
 
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
+	if len(os_name) == 0 {
+		os_name = "linux"
+	}
 
-	err := cmd.Run()
-	if err != nil {
-		log.Panicln(err.Error())
-		log.Printf("Error converting file %s using video resolution %s: %v", in, resolution, err)
+	if os_name == "windows" {
+		command := fmt.Sprintf("%s -hide_banner -y -i %s -s %s %s", ffmpeg_path, in, resolution, out)
+		cmd := exec.Command("cmd", "/C", command)
+
+		cmd.Stderr = os.Stderr
+		cmd.Stdout = os.Stdout
+
+		err := cmd.Run()
+		if err != nil {
+			log.Panicln(err.Error())
+			log.Printf("Error converting file %s using video resolution %s: %v", in, resolution, err)
+		}
+	} else {
+		cmd := exec.Command(ffmpeg_path, "-hide_banner", "-y", "-i", in, "-s", resolution, out)
+
+		cmd.Stderr = os.Stderr
+		cmd.Stdout = os.Stdout
+
+		err := cmd.Run()
+		if err != nil {
+			log.Panicln(err.Error())
+			log.Printf("Error converting file %s using video resolution %s: %v", in, resolution, err)
+		}
 	}
 }
 

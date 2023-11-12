@@ -2,6 +2,8 @@ package chspeed
 
 import (
 	"videotool/pkg/config"
+	"videotool/pkg/detect"
+	"fmt"
 	"log"
 	"os"
 	"os/exec"
@@ -9,15 +11,35 @@ import (
 
 func chspeed(in, out, speed, ffmpeg_path string) {
 
-	cmd := exec.Command(ffmpeg_path, "-hide_banner", "-y", "-i", in, "-filter:v", speed, out)
+	os_name := detect.DetectOS()
 
-	cmd.Stderr = os.Stderr
-	cmd.Stdout = os.Stdout
+	if len(os_name) == 0 {
+		os_name = "linux"
+	}
 
-	err := cmd.Run()
-	if err != nil {
-		log.Panicln(err.Error())
-		log.Printf("Error converting file %s using speed %s: %v", in, speed, err)
+	if os_name == "windows" {
+		command := fmt.Sprintf("%s -hide_banner -y -i %s --filter:v %s %s", ffmpeg_path, in, speed, out)
+		cmd := exec.Command("cmd", "/C", command)
+
+		cmd.Stderr = os.Stderr
+		cmd.Stdout = os.Stdout
+
+		err := cmd.Run()
+		if err != nil {
+			log.Panicln(err.Error())
+			log.Printf("Error converting file %s using speed %s: %v", in, speed, err)
+		}
+	} else {
+		cmd := exec.Command(ffmpeg_path, "-hide_banner", "-y", "-i", in, "-filter:v", speed, out)
+
+		cmd.Stderr = os.Stderr
+		cmd.Stdout = os.Stdout
+
+		err := cmd.Run()
+		if err != nil {
+			log.Panicln(err.Error())
+			log.Printf("Error converting file %s using speed %s: %v", in, speed, err)
+		}
 	}
 }
 
